@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hackathon Screening</title>
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="brand-logo">🛡</div> HackProctor <small>Secure screening</small></div>
+    <div class="top-actions"><a class="btn btn-soft btn-sm" href="/admin.html">Organiser login</a></div>
+  </header>
+
+  <main class="container hero-grid">
+    <!-- left: information -->
+    <section class="card hero tint-lav">
+      <span class="chip chip-lav">Hackathon shortlisting test</span>
+      <h1 id="heroTitle" style="margin-top:12px">Hackathon Screening Test</h1>
+      <p class="lead">Take the proctored online assessment to be considered for our national and international level hackathons. Your score and exam integrity decide the shortlist.</p>
+
+      <div class="mini-stats">
+        <div class="mini-stat ms-peach"><b id="statDuration">--</b><span>Duration</span></div>
+        <div class="mini-stat ms-sky"><b id="statQuestions">--</b><span>Questions</span></div>
+        <div class="mini-stat ms-rose"><b id="statStrikes">--</b><span>Warnings allowed</span></div>
+      </div>
+
+      <h3>Before you begin</h3>
+      <ul class="rules">
+        <li><span class="ico">💻</span><span>Use a laptop or desktop with <b>Chrome or Edge</b>, a working webcam, and a single screen.</span></li>
+        <li><span class="ico">🖥</span><span>The exam runs in <b>fullscreen</b>. Leaving fullscreen or switching tabs counts as a warning.</span></li>
+        <li><span class="ico">🙂</span><span>Keep your face visible and stay alone in the frame. Webcam snapshots are taken for organiser review.</span></li>
+        <li><span class="ico">🚫</span><span>Copy-paste, right-click and developer-tool shortcuts are disabled and logged.</span></li>
+        <li><span class="ico">⚠️</span><span>After <b id="rulesStrikes">5</b> warnings the exam is submitted automatically.</span></li>
+      </ul>
+    </section>
+
+    <!-- right: registration -->
+    <section class="card" id="regCard">
+      <h2>Register &amp; start</h2>
+      <p class="muted">Use the same email if you need to resume an interrupted attempt.</p>
+
+      <div id="formError" class="alert alert-rose hidden"></div>
+
+      <form id="regForm" novalidate>
+        <div class="field">
+          <label for="name">Full name</label>
+          <input class="input" id="name" autocomplete="name" placeholder="e.g. Aarav Sharma" required>
+        </div>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input class="input" id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        </div>
+        <div class="field">
+          <label for="college">College / organisation</label>
+          <input class="input" id="college" placeholder="e.g. IIT Delhi" required>
+        </div>
+        <div class="field">
+          <label>Hackathon track</label>
+          <div class="track-grid">
+            <label class="track-card nat active"><input type="radio" name="track" value="National" checked><b>🇮🇳 National</b><span>Country-level hackathon</span></label>
+            <label class="track-card intl"><input type="radio" name="track" value="International"><b>🌍 International</b><span>Global-level hackathon</span></label>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" id="startBtn" type="submit">Continue to system check</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/register.js"></script>
+</body>
+</html>

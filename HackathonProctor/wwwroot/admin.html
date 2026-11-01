@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Organiser Console</title>
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+
+  <!-- ===================== login ===================== -->
+  <div class="login-wrap" id="loginView">
+    <div class="card login-card tint-lav">
+      <div class="brand-logo" style="margin:0 auto 14px;width:56px;height:56px;font-size:28px;border-radius:18px">🛡</div>
+      <h2>Organiser console</h2>
+      <p class="muted">Sign in to review candidates and shortlist for the hackathons.</p>
+      <div id="loginError" class="alert alert-rose hidden"></div>
+      <form id="loginForm">
+        <div class="field" style="text-align:left">
+          <label for="pw">Password</label>
+          <input class="input" id="pw" type="password" autocomplete="current-password" placeholder="Admin password" required>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Sign in</button>
+      </form>
+      <p class="muted" style="margin-top:14px">Default password: <b>admin@123</b> (change it in <code>appsettings.json</code>)</p>
+      <a href="/">← Candidate page</a>
+    </div>
+  </div>
+
+  <!-- ===================== dashboard ===================== -->
+  <div id="dashView" class="hidden">
+    <header class="topbar">
+      <div class="brand"><div class="brand-logo">🛡</div> HackProctor <small>Organiser console</small></div>
+      <div class="top-actions">
+        <span class="chip chip-mint"><span class="live-dot"></span>Live · auto-refresh</span>
+        <button class="btn btn-soft btn-sm" id="refreshBtn" type="button">↻ Refresh</button>
+        <button class="btn btn-mint btn-sm" id="exportBtn" type="button">⬇ Export CSV</button>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="tiles" id="tiles"></section>
+
+      <section class="grid-2" style="margin-bottom:20px">
+        <div class="card tint-lav">
+          <h2>Auto-shortlisting</h2>
+          <p class="muted">Ranks every finished candidate per track by score, then integrity, then speed. Manual decisions are never overwritten.</p>
+          <div class="inline-form">
+            <div class="field"><label for="sCut">Cut-off score %</label><input class="input" id="sCut" type="number" min="0" max="100" step="1"></div>
+            <div class="field"><label for="sMin">Min. integrity</label><input class="input" id="sMin" type="number" min="0" max="100" step="1"></div>
+            <div class="field"><label for="sNat">National seats</label><input class="input" id="sNat" type="number" min="0" step="1"></div>
+            <div class="field"><label for="sInt">International seats</label><input class="input" id="sInt" type="number" min="0" step="1"></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" id="runShortlist" type="button">Run auto-shortlisting</button>
+          </div>
+        </div>
+
+        <div class="card tint-sky">
+          <h2>How integrity works</h2>
+          <p class="muted">Every candidate starts at <b>100</b>. Each logged event (tab switch, leaving fullscreen, no face, multiple faces, copy-paste …) deducts points. Candidates below the minimum integrity are not auto-shortlisted — always review snapshots before a final decision.</p>
+          <div id="demoTools" class="hidden" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+            <button class="btn btn-peach btn-sm" id="seedBtn" type="button">＋ Load demo candidates</button>
+            <button class="btn btn-rose btn-sm" id="clearDemoBtn" type="button">Remove demo candidates</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="filters">
+          <input class="input grow" id="search" placeholder="Search name, email or college…">
+          <select class="input" id="fTrack">
+            <option value="">All tracks</option>
+            <option>National</option>
+            <option>International</option>
+          </select>
+          <select class="input" id="fStatus">
+            <option value="">All statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Shortlisted">Shortlisted</option>
+            <option value="Waitlisted">Waitlisted</option>
+            <option value="Rejected">Rejected</option>
+            <option value="InProgress">In exam now</option>
+            <option value="Flagged">Flagged (low integrity)</option>
+          </select>
+        </div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Rank</th><th>Candidate</th><th>Track</th><th>Score</th><th>Integrity</th>
+                <th>Warnings</th><th>Time</th><th>Decision</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="empty hidden" id="emptyMsg">No candidates match. Share the exam link <b id="origin"></b> or load demo candidates to preview the dashboard.</div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===================== candidate detail ===================== -->
+  <div class="overlay hidden" id="detailOverlay">
+    <div class="modal modal-lg" id="detailBody"></div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

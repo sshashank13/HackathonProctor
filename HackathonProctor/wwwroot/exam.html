@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proctored Exam</title>
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body class="exam-body">
+
+  <!-- ===================== exam header ===================== -->
+  <header class="topbar exam-top">
+    <div class="brand"><div class="brand-logo">🛡</div><span id="examTitle">Exam</span><small id="candName"></small></div>
+    <div class="top-actions">
+      <div class="pill pill-peach" id="timerPill" title="Time remaining">⏱ <span id="timer">--:--</span></div>
+      <div class="pill pill-rose" id="strikePill" title="Proctoring warnings">⚠ <span id="strikes">0</span>/<span id="maxStrikes">5</span></div>
+      <button class="btn btn-primary" id="submitBtn" type="button">Submit exam</button>
+    </div>
+  </header>
+
+  <!-- ===================== exam body ===================== -->
+  <main class="exam-layout">
+    <section>
+      <div class="progress"><div id="progressBar"></div></div>
+      <div class="card q-card">
+        <div class="q-meta">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span class="chip chip-lav" id="qNum">Question</span>
+            <span class="chip chip-sky" id="qCat"></span>
+          </div>
+          <span class="chip chip-butter" id="qPts"></span>
+        </div>
+        <div class="q-text" id="qText"></div>
+        <div class="options" id="options" role="radiogroup" aria-label="Answer options"></div>
+        <div class="save-state" id="saveState"></div>
+
+        <div class="q-actions">
+          <div class="grp">
+            <button class="btn btn-soft" id="btnPrev" type="button">← Previous</button>
+            <button class="btn btn-soft" id="btnNext" type="button">Next →</button>
+          </div>
+          <div class="grp">
+            <button class="btn btn-peach" id="btnMark" type="button">⚑ Mark for review</button>
+            <button class="btn btn-ghost" id="btnClear" type="button">Clear answer</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side-col">
+      <div class="card tint-sky flat">
+        <h3>Question palette</h3>
+        <div class="muted" id="answeredCount"></div>
+        <div class="pal-grid" id="palette"></div>
+        <div class="legend">
+          <span><i style="background:var(--mint)"></i>Answered</span>
+          <span><i style="background:var(--peach)"></i>Marked</span>
+          <span><i style="background:#EFEFF8"></i>Not answered</span>
+        </div>
+      </div>
+
+      <div class="card tint-mint flat">
+        <h3>Proctor camera</h3>
+        <div class="cam-box"><video id="cam" autoplay muted playsinline></video></div>
+        <div class="cam-chips">
+          <span class="chip chip-mint" id="camChip">Camera live</span>
+          <span class="chip chip-grey" id="faceChip">Face check starting…</span>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ===================== pre-exam gate ===================== -->
+  <div class="overlay solid" id="gate">
+    <div class="card gate-card">
+      <span class="chip chip-lav" id="gateMeta"></span>
+      <h1 id="gateTitle" style="margin-top:10px;font-size:1.7rem">System check</h1>
+      <p class="muted">Hello <b id="gateName"></b>, let's make sure everything works before the timer starts.</p>
+      <div id="gateResume" class="alert alert-butter hidden"></div>
+      <div id="gateError" class="alert alert-rose hidden"></div>
+
+      <div class="gate-grid">
+        <div>
+          <div class="cam-box"><video id="gateCam" autoplay muted playsinline></video></div>
+          <div class="check-list">
+            <div class="check-row"><span>📷 Webcam</span><span class="chip chip-grey" id="chipCam">Not enabled</span></div>
+            <div class="check-row"><span>🙂 Face detection</span><span class="chip chip-grey" id="chipFace">Loading…</span></div>
+            <div class="check-row"><span>🖥 Display</span><span class="chip chip-mint" id="chipDisplay">Single screen</span></div>
+          </div>
+          <button class="btn btn-sky btn-block" id="camBtn" type="button">Enable camera</button>
+        </div>
+
+        <div>
+          <h3>Exam rules</h3>
+          <ul class="rules">
+            <li><span class="ico">🖥</span><span>Stay in <b>fullscreen</b>. Leaving it is a warning.</span></li>
+            <li><span class="ico">🪟</span><span>Do not switch tabs or windows.</span></li>
+            <li><span class="ico">🙂</span><span>Keep your face visible, alone, in good light.</span></li>
+            <li><span class="ico">🚫</span><span>No copy / paste / right-click / dev-tools.</span></li>
+            <li><span class="ico">⚠️</span><span>Too many warnings submit the exam automatically.</span></li>
+            <li><span class="ico">⏱</span><span>The timer cannot be paused. Answers save automatically.</span></li>
+          </ul>
+          <label class="agree"><input type="checkbox" id="agree"><span>I agree to be proctored. I understand that periodic webcam snapshots and activity logs are stored for organiser review only.</span></label>
+          <button class="btn btn-primary btn-lg btn-block" id="beginBtn" type="button" disabled>Enter fullscreen &amp; begin</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== return-to-fullscreen ===================== -->
+  <div class="overlay hidden" id="fsOverlay">
+    <div class="modal" style="max-width:480px;text-align:center">
+      <div class="done-icon warn">⚠</div>
+      <h2>You left fullscreen</h2>
+      <p class="muted">This was logged as a warning. The timer is still running. Return to fullscreen to continue your exam.</p>
+      <button class="btn btn-primary btn-lg" id="fsReturn" type="button">Return to fullscreen</button>
+    </div>
+  </div>
+
+  <!-- ===================== confirm submit ===================== -->
+  <div class="overlay hidden" id="confirmModal">
+    <div class="modal" style="max-width:480px">
+      <h2>Submit your exam?</h2>
+      <p id="confirmText" class="muted"></p>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px">
+        <button class="btn btn-ghost" id="confirmNo" type="button">Keep working</button>
+        <button class="btn btn-primary" id="confirmYes" type="button">Yes, submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== finished ===================== -->
+  <div class="overlay solid hidden" id="doneScreen">
+    <div class="card done-card">
+      <div class="done-icon" id="doneIcon">✅</div>
+      <h1 id="doneTitle" style="font-size:1.7rem">Exam submitted</h1>
+      <p id="doneText" class="muted"></p>
+      <div class="alert alert-sky" id="doneNote">Thank you! Shortlisting results will be shared by the organisers by email. You can now close this window.</div>
+      <a class="btn btn-soft" href="/">Back to home</a>
+    </div>
+  </div>
+
+  <!-- ===================== fatal ===================== -->
+  <div class="overlay solid hidden" id="fatalScreen">
+    <div class="card done-card">
+      <div class="done-icon warn">!</div>
+      <h2>Something went wrong</h2>
+      <p id="fatalText" class="muted"></p>
+      <a class="btn btn-soft" href="/">Back to home</a>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/exam.js"></script>
+</body>
+</html>

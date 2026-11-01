@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <!-- If your Visual Studio only has a newer SDK (e.g. .NET 9 / .NET 10), change this one line to net9.0 / net10.0 -->
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>HackathonProctor</RootNamespace>
+    <AssemblyName>HackathonProctor</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="Data\questions.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
